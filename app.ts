@@ -4,7 +4,6 @@ import { join } from "path";
 import * as cookieParser from "cookie-parser";
 import * as logger from "morgan";
 import * as mongoose from "mongoose";
-require("dotenv").config();
 
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
