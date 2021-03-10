@@ -3,9 +3,17 @@ import * as cors from "cors";
 import { join } from "path";
 import * as cookieParser from "cookie-parser";
 import * as logger from "morgan";
+import * as mongoose from "mongoose";
+require("dotenv").config();
 
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
+import authRouter from "./routes/auth";
+
+mongoose.connect(
+  `mongodb+srv://${process.env.NAME}:${process.env.PASSWORD}@cluster0.oplxc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
 
 var app = express();
 
@@ -17,6 +25,7 @@ app.use(cookieParser());
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/auth", authRouter);
 
 // error handler
 app.use(
