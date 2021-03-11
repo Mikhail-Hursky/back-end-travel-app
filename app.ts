@@ -5,12 +5,15 @@ import * as cookieParser from "cookie-parser";
 import * as logger from "morgan";
 import * as mongoose from "mongoose";
 
+
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
 import authRouter from "./routes/auth";
 
+const { NAME, PASSWORD } = process.env;
+
 mongoose.connect(
-  `mongodb+srv://${process.env.NAME}:${process.env.PASSWORD}@cluster0.oplxc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  `mongodb+srv://${NAME}:${PASSWORD}@cluster0.oplxc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
 
