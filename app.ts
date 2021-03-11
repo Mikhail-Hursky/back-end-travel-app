@@ -1,6 +1,5 @@
 import * as express from "express";
 import * as cors from "cors";
-import { join } from "path";
 import * as cookieParser from "cookie-parser";
 import * as logger from "morgan";
 import * as mongoose from "mongoose";
