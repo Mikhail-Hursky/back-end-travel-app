@@ -25,7 +25,12 @@ const AuthController = {
         return res.status(400).json({ message: "Email already exists" });
 
       const hashPassword = bcrypt.hashSync(password, 7);
-      const user = new User({ nickName, password: hashPassword, avatar:__dirname + "/public/ava.jpg", email });
+      const user = new User({
+        nickName,
+        password: hashPassword,
+        avatar: "https://miro.medium.com/max/720/1*W35QUSvGpcLuxPo3SRTH4w.png",
+        email,
+      });
 
       await user.save();
       return res
