@@ -25,7 +25,8 @@ const AuthController = {
         return res.status(400).json({ message: "Email already exists" });
 
       const hashPassword = bcrypt.hashSync(password, 7);
-      const user = new User({ nickName, password: hashPassword, email });
+      const user = new User({ nickName, password: hashPassword, avatar:__dirname + "/public/ava.jpg", email });
+
       await user.save();
       return res
         .status(200)
@@ -42,7 +43,7 @@ const AuthController = {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
       console.log(user);
-      
+
       if (!user) {
         return res
           .status(400)
