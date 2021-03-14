@@ -60,7 +60,7 @@ const AuthController = {
       }
       const token = generateToken(user.nickName);
 
-      return res.json({ user, token });
+      return res.json({ nickName: user.nickName, avatar: user.avatar, token });
     } catch (e) {
       res.status(400).json({ message: "Login Error" });
     }
