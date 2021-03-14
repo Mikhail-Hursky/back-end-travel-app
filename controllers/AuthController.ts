@@ -47,7 +47,6 @@ const AuthController = {
     try {
       const { email, password } = req.body;
       const user = await User.findOne({ email });
-      console.log(user);
 
       if (!user) {
         return res
@@ -61,7 +60,7 @@ const AuthController = {
       }
       const token = generateToken(user.nickName);
 
-      return res.json(token);
+      return res.json({ user, token });
     } catch (e) {
       res.status(400).json({ message: "Login Error" });
     }
