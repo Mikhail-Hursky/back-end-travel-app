@@ -18,10 +18,6 @@ mongoose.connect(
 );
 
 var app = express();
-export const PATH = __dirname;
-
-console.log(PATH);
-
 
 app.use(logger("dev"));
 app.use(express.static(__dirname));
@@ -38,6 +34,8 @@ app.use("/upload", uploadRouter);
 
 app.use(express.static(__dirname));
 
+export const PATH = __dirname;
+
 // error handler
 app.use(
   (
@@ -46,7 +44,7 @@ app.use(
     res: {
       locals: { message: any; error: any };
       status: (arg0: any) => void;
-      render: (arg0: string) => void;
+      json: (arg0: any) => void;
     },
     next: any
   ) => {
@@ -56,7 +54,7 @@ app.use(
 
     // render the error page
     res.status(err.status || 500);
-    res.render("error");
+    res.json({ error: err });
   }
 );
 

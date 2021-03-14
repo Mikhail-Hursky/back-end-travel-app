@@ -1,21 +1,57 @@
 import { Router } from "express";
-import * as multer from "multer";
 import * as jwt from "jsonwebtoken";
 import secret from "../config";
-import { PATH } from "../app";
+import app, { PATH } from "../app";
 import User from "../models/IUser";
+import * as multer from "multer";
 
 const router = Router();
 
-const storageConfig = multer.diskStorage({
+/* const storageConfig = multer.diskStorage({
   destination: (req, file, cb) => {
+      console.log("asdasdasdasd");
+      
     cb(null, "avatars");
   },
   filename: (req, file, cb) => {
-    if (!req.headers.authorization) return;
+    console.log("asdasdasdasd");
     const token = req.headers.authorization.split(" ")[1];
     if (!token) return;
+    console.log("asdasdasdasd");
+    const data = jwt.verify(token, secret.secret);
+    //@ts-ignore
+    file.originalname = data.nickName;
 
+    cb(null, file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+      console.log("TRUE");
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+const uploadAvatars = multer({
+  storage: storageConfig,
+  fileFilter: fileFilter,
+}); */
+
+const upload = multer({ dest: "uploads" });
+
+const storageConfig = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads");
+  },
+  filename: (req, file, cb) => {
+    const token = req.headers.authorization.split(" ")[1];
     const data = jwt.verify(token, secret.secret);
     //@ts-ignore
     file.originalname = data.nickName;
@@ -23,7 +59,7 @@ const storageConfig = multer.diskStorage({
     cb(null, file.originalname + "." + file.mimetype.split("/")[1]);
   },
 });
-
+// определение фильтра
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === "image/png" ||
@@ -36,34 +72,25 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const uploadAvatars = multer({
-  storage: storageConfig,
-  fileFilter: fileFilter,
-});
-
-router.post("/avatar", uploadAvatars.single("filedata"), upload);
-
-async function upload(req, res, next) {
-  if (!req.headers.authorization) return;
-  const token = req.headers.authorization.split(" ")[1];
-  if (!token) return;
-
-  const data = jwt.verify(token, secret.secret);
-  //@ts-ignore
-  const nickName = data.nickName;
-  let filedata = req.file;
-  console.log(PATH);
-
-  console.log(filedata);
-  if (!filedata) res.send("Ошибка при загрузке файла");
-  else {
-    let path = PATH + "\\" + filedata.path.split("\\\\").join("\\");
-    console.log(path);
-
-    const response = await User.updateOne({ nickName }, { avatar: path });
-
-    res.status(200);
+router.post(
+  "/avatar",
+  multer({ storage: storageConfig, fileFilter: fileFilter }).single("filedata"),
+  async function (req, res) {
+    if (!req.headers.authorization) return;
+    const token = req.headers.authorization.split(" ")[1];
+    if (!token) return;
+    const data = jwt.verify(token, secret.secret);
+    //@ts-ignore
+    const nickName = data.nickName;
+    let filedata = req.file;
+    console.log(filedata);
+    if (!filedata) res.status(400).json({ message: "Invalid images" });
+    else {
+      let path = PATH + "\\" + filedata.path.split("\\\\").join("\\");
+      await User.updateOne({ nickName }, { avatar: path });
+      res.status(200).json({ message: "Succes" });
+    }
   }
-}
+);
 
 export default router;
