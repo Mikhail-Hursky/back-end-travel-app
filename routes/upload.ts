@@ -7,43 +7,6 @@ import * as multer from "multer";
 
 const router = Router();
 
-/* const storageConfig = multer.diskStorage({
-  destination: (req, file, cb) => {
-      console.log("asdasdasdasd");
-      
-    cb(null, "avatars");
-  },
-  filename: (req, file, cb) => {
-    console.log("asdasdasdasd");
-    const token = req.headers.authorization.split(" ")[1];
-    if (!token) return;
-    console.log("asdasdasdasd");
-    const data = jwt.verify(token, secret.secret);
-    //@ts-ignore
-    file.originalname = data.nickName;
-
-    cb(null, file.originalname);
-  },
-});
-
-const fileFilter = (req, file, cb) => {
-  if (
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg"
-  ) {
-      console.log("TRUE");
-    cb(null, true);
-  } else {
-    cb(null, false);
-  }
-};
-
-const uploadAvatars = multer({
-  storage: storageConfig,
-  fileFilter: fileFilter,
-}); */
-
 const upload = multer({ dest: "uploads" });
 
 const storageConfig = multer.diskStorage({
@@ -85,9 +48,9 @@ router.post(
     let filedata = req.file;
     console.log(filedata);
     if (!filedata) res.status(400).json({ message: "Invalid images" });
-    else {
-      let path = PATH + "\\" + filedata.path.split("\\\\").join("\\");
-      await User.updateOne({ nickName }, { avatar: path });
+    else {  
+      let path = "https://rs-react.herokuapp.com/static/" + filedata.filename;
+      const response = await User.updateOne({ nickName }, { avatar: path });
       res.status(200).json({ message: "Succes" });
     }
   }
