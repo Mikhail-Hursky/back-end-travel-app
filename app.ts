@@ -8,6 +8,7 @@ import * as mongoose from "mongoose";
 import indexRouter from "./routes/index";
 import usersRouter from "./routes/users";
 import authRouter from "./routes/auth";
+import uploadRouter from "./routes/upload";
 
 const { NAME, PASSWORD } = process.env;
 
@@ -17,10 +18,15 @@ mongoose.connect(
 );
 
 var app = express();
+export const PATH = __dirname;
+
+console.log(PATH);
+
 
 app.use(logger("dev"));
+app.use(express.static(__dirname));
 app.use(cors());
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -28,6 +34,9 @@ app.use(cookieParser());
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/auth", authRouter);
+app.use("/upload", uploadRouter);
+
+app.use(express.static(__dirname));
 
 // error handler
 app.use(
