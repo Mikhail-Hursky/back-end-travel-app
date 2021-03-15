@@ -1,4 +1,6 @@
 import { Router } from "express";
+import Country from "../models/ICountry";
+
 const router = Router();
 
 const test = {
@@ -28,9 +30,15 @@ const test = {
   ],
 };
 
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.send(test);
+router.get("/", async function (req, res, next) {
+  let dataCountrys;
+  await Country.find({}, function (err, country) {
+    if (err) res.status(500).json(err);
+    else {
+      dataCountrys = country;
+    }
+  });
+  res.status(200).json(dataCountrys);
 });
 
 export default router;
