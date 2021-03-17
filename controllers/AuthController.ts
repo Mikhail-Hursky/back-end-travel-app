@@ -35,7 +35,10 @@ const AuthController = {
       await user.save();
       return res
         .status(200)
-        .json({ message: "Registration completed successfully" });
+        .json({
+          message: "Registration completed successfully",
+          token: generateToken(user.nickName),
+        });
     } catch (e) {
       console.log(e);
 
