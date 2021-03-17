@@ -15,7 +15,7 @@ router.get("/", async function (req, res) {
   res.status(200).json(dataCountrys);
 });
 
-router.get("/coutry", async (req, res) => {
+router.post("/country", async (req, res) => {
   const country = await CountryInfo.findOne({ country: req.body.country });
   if (!country) res.status(403).json({ message: "Country not found" });
   res.status(200).json(country);
